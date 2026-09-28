@@ -1,0 +1,141 @@
+-- Headless + Korblox (R6) + ULTRA CINEMATIC FULLSCREEN LOADING SCREEN BY 200
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- === ULTRA COOL FULLSCREEN LOADING SCREEN UI ===
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "JadenOnTopUltraLoading"
+screenGui.IgnoreGuiInset = true
+screenGui.ResetOnSpawn = false
+screenGui.Parent = playerGui
+
+-- Background Frame with Gradient
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(1, 0, 1, 0)
+frame.BackgroundColor3 = Color3.fromRGB(10, 10, 12)
+frame.BorderSizePixel = 0
+frame.Parent = screenGui
+
+local bgGradient = Instance.new("UIGradient")
+bgGradient.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(18, 18, 22)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(5, 5, 8))
+})
+bgGradient.Rotation = 45
+bgGradient.Parent = frame
+
+-- Center Glow Effect Frame
+local centerGlow = Instance.new("Frame")
+centerGlow.Size = UDim2.new(0, 400, 0, 150)
+centerGlow.Position = UDim2.new(0.5, -200, 0.5, -75)
+centerGlow.BackgroundTransparency = 1
+centerGlow.Parent = frame
+
+-- Scale effect for pulsing animation
+local uiScale = Instance.new("UIScale")
+uiScale.Scale = 1
+uiScale.Parent = centerGlow
+
+-- Main Cool Title Text
+local textLabel = Instance.new("TextLabel")
+textLabel.Size = UDim2.new(1, 0, 1, 0)
+textLabel.BackgroundTransparency = 1
+textLabel.Font = Enum.Font.GothamBlack
+textLabel.Text = "JADEN ON TOP"
+textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+textLabel.TextSize = 38
+textLabel.Parent = centerGlow
+
+-- Neon Text Stroke for Gamer/Hacker Aesthetic
+local textStroke = Instance.new("UIStroke")
+textStroke.Color = Color3.fromRGB(0, 170, 255) -- Electric Blue Glow
+textStroke.Thickness = 2
+textStroke.Transparency = 0.2
+textStroke.Parent = textLabel
+
+-- Pulse Animation while waiting
+local pulseTween = TweenService:Create(uiScale, TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {Scale = 1.05})
+pulseTween:Play()
+
+-- Duration: 3 seconds (Adjustable from 1 to 5)
+task.spawn(function()
+	task.wait(3) 
+	
+	pulseTween:Cancel()
+	
+	-- Epic Outro Animation
+	local info = TweenInfo.new(0.6, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out)
+	
+	local t1 = TweenService:Create(textLabel, info, {TextTransparency = 1})
+	local t2 = TweenService:Create(textStroke, info, {Transparency = 1})
+	local t3 = TweenService:Create(frame, info, {BackgroundTransparency = 1})
+	local t4 = TweenService:Create(uiScale, info, {Scale = 1.2})
+	
+	t1:Play()
+	t2:Play()
+	t3:Play()
+	t4:Play()
+	
+	t3.Completed:Wait()
+	screenGui:Destroy()
+end)
+
+-- === HEADLESS & KORBLOX LOGIC ===
+local HEADLESS_MESH_ID = "rbxassetid://1095708"
+local KORBLOX_MESH_ID = "rbxassetid://101851696"
+local KORBLOX_TEXTURE_ID = "rbxassetid://101851254"
+
+local function applyHeadless(character)
+	local head = character:FindFirstChild("Head")
+	if not head then return end
+
+	head.Transparency = 1
+	head.CanCollide = false
+
+	local face = head:FindFirstChildOfClass("Decal")
+	if face then face:Destroy() end
+
+	for _, v in ipairs(head:GetChildren()) do
+		if v:IsA("SpecialMesh") or v:IsA("CharacterMesh") then
+			v:Destroy()
+		end
+	end
+
+	local mesh = Instance.new("SpecialMesh")
+	mesh.MeshType = Enum.MeshType.FileMesh
+	mesh.MeshId = HEADLESS_MESH_ID
+	mesh.Scale = Vector3.new(0.001, 0.001, 0.001)
+	mesh.Parent = head
+end
+
+local function applyKorblox(character)
+	local rightLeg = character:FindFirstChild("Right Leg")
+	if not rightLeg then return end
+
+	for _, v in ipairs(rightLeg:GetChildren()) do
+		if v:IsA("SpecialMesh") or v:IsA("CharacterMesh") then
+			v:Destroy()
+		end
+	end
+
+	local mesh = Instance.new("SpecialMesh")
+	mesh.MeshType = Enum.MeshType.FileMesh
+	mesh.MeshId = KORBLOX_MESH_ID
+	mesh.TextureId = KORBLOX_TEXTURE_ID
+	mesh.Scale = Vector3.new(1, 1, 1)
+	mesh.Parent = rightLeg
+end
+
+player.CharacterAdded:Connect(function(character)
+	task.wait(1)
+	applyHeadless(character)
+	applyKorblox(character)
+end)
+
+if player.Character then
+	applyHeadless(player.Character)
+	applyKorblox(player.Character)
+end
