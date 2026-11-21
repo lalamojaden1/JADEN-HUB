@@ -1,5 +1,5 @@
 
--- JADENHUB --
+-- 67 --
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
@@ -8,26 +8,23 @@ local TeleportService = game:GetService("TeleportService")
 
 local Player = Players.LocalPlayer
 local IsMobile = UserInputService.TouchEnabled
-
 local DiscordLink = "https://discord.gg/XMHgVUDer"
 
-local ButtonSize = IsMobile and 48 or 56
+local Size = IsMobile and 48 or 56
 local PanelWidth = IsMobile and 145 or 165
-local PanelHeight = IsMobile and 105 or 115
 
 -- GUI
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "JADENHUB"
-ScreenGui.ResetOnSpawn = false
-ScreenGui.Parent = Player:WaitForChild("PlayerGui")
+local Gui = Instance.new("ScreenGui")
+Gui.Name = "JADENHUB"
+Gui.ResetOnSpawn = false
+Gui.Parent = Player:WaitForChild("PlayerGui")
 
 -- MAIN CIRCLE
 local Main = Instance.new("ImageButton")
-Main.Name = "JADENHUB"
-Main.Parent = ScreenGui
-Main.Size = UDim2.fromOffset(ButtonSize, ButtonSize)
-Main.Position = UDim2.new(0, 20, 0.5, -ButtonSize/2)
-Main.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Main.Parent = Gui
+Main.Size = UDim2.fromOffset(Size, Size)
+Main.Position = UDim2.new(0, 20, 0.5, -Size/2)
+Main.BackgroundColor3 = Color3.new(0, 0, 0)
 Main.Image = "rbxassetid://72712654938049"
 Main.ScaleType = Enum.ScaleType.Crop
 Main.AutoButtonColor = false
@@ -41,9 +38,9 @@ Glow.Color = Color3.new(1, 1, 1)
 Glow.Thickness = 2
 Glow.Parent = Main
 
--- ANIMATED GLOW
+-- GLOW ANIMATION
 task.spawn(function()
-    while ScreenGui.Parent do
+    while Gui.Parent do
         TweenService:Create(Glow, TweenInfo.new(0.7), {
             Thickness = 4,
             Transparency = 0.1
@@ -60,176 +57,181 @@ end)
 
 -- MAIN PANEL
 local Frame = Instance.new("Frame")
-Frame.Parent = ScreenGui
-Frame.Size = UDim2.fromOffset(PanelWidth, PanelHeight)
-Frame.Position = UDim2.new(0, ButtonSize + 30, 0.5, -PanelHeight/2)
+Frame.Parent = Gui
+Frame.Size = UDim2.fromOffset(PanelWidth, 43)
+Frame.Position = UDim2.new(0, Size + 28, 0.5, -21)
 Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 Frame.Visible = false
 
-local PanelCorner = Instance.new("UICorner")
-PanelCorner.CornerRadius = UDim.new(0, 9)
-PanelCorner.Parent = Frame
+local FC = Instance.new("UICorner")
+FC.CornerRadius = UDim.new(0, 9)
+FC.Parent = Frame
 
-local PanelStroke = Instance.new("UIStroke")
-PanelStroke.Color = Color3.new(1, 1, 1)
-PanelStroke.Thickness = 1.5
-PanelStroke.Parent = Frame
+local FS = Instance.new("UIStroke")
+FS.Color = Color3.new(1, 1, 1)
+FS.Thickness = 1.5
+FS.Parent = Frame
 
--- BUTTON CREATOR
-local function CreateButton(name, text, y, callback)
-    local Button = Instance.new("TextButton")
-    Button.Name = name
-    Button.Parent = Frame
-    Button.Size = UDim2.new(1, -12, 0, 38)
-    Button.Position = UDim2.fromOffset(6, y)
-    Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Button.Text = text
-    Button.TextColor3 = Color3.fromRGB(0, 0, 0)
-    Button.Font = Enum.Font.GothamBlack
-    Button.TextSize = IsMobile and 12 or 14
-    Button.AutoButtonColor = true
+-- LEAVE BUTTON
+local Leave = Instance.new("TextButton")
+Leave.Parent = Frame
+Leave.Size = UDim2.new(1, -48, 1, -10)
+Leave.Position = UDim2.fromOffset(5, 5)
+Leave.BackgroundColor3 = Color3.new(1, 1, 1)
+Leave.Text = "LEAVE"
+Leave.TextColor3 = Color3.new(0, 0, 0)
+Leave.Font = Enum.Font.GothamBlack
+Leave.TextSize = 13
 
-    local Corner = Instance.new("UICorner")
-    Corner.CornerRadius = UDim.new(0, 7)
-    Corner.Parent = Button
+local LC = Instance.new("UICorner")
+LC.CornerRadius = UDim.new(0, 6)
+LC.Parent = Leave
 
-    Button.Activated:Connect(callback)
-
-    return Button
-end
-
--- LEAVE
-CreateButton("Leave", "LEAVE", 6, function()
-    Player:Kick("You have left the game!\n" .. DiscordLink)
+Leave.Activated:Connect(function()
+    Player:Kick(DiscordLink)
 end)
 
--- SETTINGS
-local Settings = CreateButton("Settings", "SETTINGS", 51, function()
-    Frame.Visible = false
-    SettingsFrame.Visible = not SettingsFrame.Visible
-end)
+-- GEAR BUTTON
+local Gear = Instance.new("TextButton")
+Gear.Parent = Frame
+Gear.Size = UDim2.fromOffset(32, 32)
+Gear.Position = UDim2.new(1, -37, 0, 5)
+Gear.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+Gear.Text = "⚙️"
+Gear.TextSize = 18
+Gear.Font = Enum.Font.GothamBold
+Gear.TextColor3 = Color3.new(1, 1, 1)
 
--- SETTINGS PANEL
-local SettingsFrame = Instance.new("Frame")
-SettingsFrame.Parent = ScreenGui
-SettingsFrame.Size = UDim2.fromOffset(PanelWidth, 100)
-SettingsFrame.Position = UDim2.new(0, ButtonSize + 30, 0.5, -50)
-SettingsFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-SettingsFrame.Visible = false
+local GC = Instance.new("UICorner")
+GC.CornerRadius = UDim.new(0, 6)
+GC.Parent = Gear
 
-local SettingsCorner = Instance.new("UICorner")
-SettingsCorner.CornerRadius = UDim.new(0, 9)
-SettingsCorner.Parent = SettingsFrame
+-- SMALL SETTINGS GUI
+local Settings = Instance.new("Frame")
+Settings.Parent = Gui
+Settings.Size = UDim2.fromOffset(IsMobile and 125 or 145, 48)
+Settings.Position = UDim2.new(0, Size + 28, 0.5, 29)
+Settings.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Settings.Visible = false
 
-local SettingsStroke = Instance.new("UIStroke")
-SettingsStroke.Color = Color3.new(1, 1, 1)
-SettingsStroke.Thickness = 1.5
-SettingsStroke.Parent = SettingsFrame
+local SC = Instance.new("UICorner")
+SC.CornerRadius = UDim.new(0, 8)
+SC.Parent = Settings
 
-local ServerHop = Instance.new("TextButton")
-ServerHop.Parent = SettingsFrame
-ServerHop.Size = UDim2.new(1, -12, 0, 38)
-ServerHop.Position = UDim2.fromOffset(6, 6)
-ServerHop.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-ServerHop.Text = "SERVER HOP"
-ServerHop.TextColor3 = Color3.fromRGB(0, 0, 0)
-ServerHop.Font = Enum.Font.GothamBlack
-ServerHop.TextSize = IsMobile and 12 or 14
+local SS = Instance.new("UIStroke")
+SS.Color = Color3.new(1, 1, 1)
+SS.Thickness = 1.5
+SS.Parent = Settings
 
-local HopCorner = Instance.new("UICorner")
-HopCorner.CornerRadius = UDim.new(0, 7)
-HopCorner.Parent = ServerHop
+-- SERVER HOP
+local Hop = Instance.new("TextButton")
+Hop.Parent = Settings
+Hop.Size = UDim2.new(1, -10, 1, -10)
+Hop.Position = UDim2.fromOffset(5, 5)
+Hop.BackgroundColor3 = Color3.new(1, 1, 1)
+Hop.Text = "SERVER HOP"
+Hop.TextColor3 = Color3.new(0, 0, 0)
+Hop.Font = Enum.Font.GothamBlack
+Hop.TextSize = 12
 
-local Back = Instance.new("TextButton")
-Back.Parent = SettingsFrame
-Back.Size = UDim2.new(1, -12, 0, 38)
-Back.Position = UDim2.fromOffset(6, 51)
-Back.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-Back.Text = "BACK"
-Back.TextColor3 = Color3.new(1, 1, 1)
-Back.Font = Enum.Font.GothamBold
-Back.TextSize = 12
+local HC = Instance.new("UICorner")
+HC.CornerRadius = UDim.new(0, 6)
+HC.Parent = Hop
 
-local BackCorner = Instance.new("UICorner")
-BackCorner.CornerRadius = UDim.new(0, 7)
-BackCorner.Parent = Back
-
-Back.Activated:Connect(function()
-    SettingsFrame.Visible = false
-    Frame.Visible = true
+-- GEAR TOGGLE
+Gear.Activated:Connect(function()
+    Settings.Visible = not Settings.Visible
 end)
 
 -- SERVER HOP
-local hopping = false
+local Hopping = false
 
-ServerHop.Activated:Connect(function()
-    if hopping then return end
-    hopping = true
-    ServerHop.Text = "HOPPING..."
+Hop.Activated:Connect(function()
+    if Hopping then return end
 
-    local success, err = pcall(function()
+    Hopping = true
+    Hop.Text = "HOPPING..."
+
+    local Success, Error = pcall(function()
         TeleportService:Teleport(game.PlaceId, Player)
     end)
 
-    if not success then
-        ServerHop.Text = "HOP FAILED"
-        warn("JADENHUB ServerHop:", err)
+    if not Success then
+        warn("JADENHUB:", Error)
+        Hop.Text = "FAILED - RETRY"
         task.wait(2)
-        ServerHop.Text = "SERVER HOP"
-        hopping = false
+        Hop.Text = "SERVER HOP"
+        Hopping = false
     end
 end)
 
--- DRAGGABLE MAIN IMAGE
-local dragging = false
-local dragStart
-local startPos
-local moved = false
-local dragInput
+-- DRAGGABLE MAIN CIRCLE
+local Dragging = false
+local DragStart
+local StartPos
+local Moved = false
+local DragInput
 
-Main.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1
-    or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true
-        moved = false
-        dragStart = input.Position
-        startPos = Main.Position
-        dragInput = input
+Main.InputBegan:Connect(function(Input)
+    if Input.UserInputType == Enum.UserInputType.MouseButton1
+    or Input.UserInputType == Enum.UserInputType.Touch then
+
+        Dragging = true
+        Moved = false
+        DragStart = Input.Position
+        StartPos = Main.Position
+        DragInput = Input
     end
 end)
 
-UserInputService.InputChanged:Connect(function(input)
-    if dragging and (
-        input.UserInputType == Enum.UserInputType.MouseMovement
-        or input.UserInputType == Enum.UserInputType.Touch
+UserInputService.InputChanged:Connect(function(Input)
+    if Dragging and (
+        Input.UserInputType == Enum.UserInputType.MouseMovement
+        or Input.UserInputType == Enum.UserInputType.Touch
     ) then
-        local delta = input.Position - dragStart
 
-        if delta.Magnitude > 5 then
-            moved = true
+        local Delta = Input.Position - DragStart
+
+        if Delta.Magnitude > 5 then
+            Moved = true
         end
 
         Main.Position = UDim2.new(
-            startPos.X.Scale,
-            startPos.X.Offset + delta.X,
-            startPos.Y.Scale,
-            startPos.Y.Offset + delta.Y
+            StartPos.X.Scale,
+            StartPos.X.Offset + Delta.X,
+            StartPos.Y.Scale,
+            StartPos.Y.Offset + Delta.Y
+        )
+
+        -- Keep panels beside the circle
+        Frame.Position = UDim2.new(
+            Main.Position.X.Scale,
+            Main.Position.X.Offset + Size + 28,
+            Main.Position.Y.Scale,
+            Main.Position.Y.Offset + Size/2 - 21
+        )
+
+        Settings.Position = UDim2.new(
+            Frame.Position.X.Scale,
+            Frame.Position.X.Offset,
+            Frame.Position.Y.Scale,
+            Frame.Position.Y.Offset + 48
         )
     end
 end)
 
-UserInputService.InputEnded:Connect(function(input)
-    if input == dragInput then
-        dragging = false
-        dragInput = nil
+UserInputService.InputEnded:Connect(function(Input)
+    if Input == DragInput then
+        Dragging = false
+        DragInput = nil
     end
 end)
 
--- OPEN/CLOSE MAIN UI
+-- MAIN TOGGLE
 Main.Activated:Connect(function()
-    if not moved then
+    if not Moved then
         Frame.Visible = not Frame.Visible
-        SettingsFrame.Visible = false
+        Settings.Visible = false
     end
 end)
 
