@@ -1,0 +1,150 @@
+
+-- JADEN ON TOP --
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+
+local Player = Players.LocalPlayer
+local IsMobile = UserInputService.TouchEnabled
+
+local DiscordLink = "https://discord.gg/XMHgVUDer"
+
+local ButtonSize = IsMobile and 48 or 56
+local PanelWidth = IsMobile and 110 or 125
+local PanelHeight = IsMobile and 48 or 52
+
+-- GUI
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "JADENHUB"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = Player:WaitForChild("PlayerGui")
+
+-- CIRCLE IMAGE
+local Main = Instance.new("ImageButton")
+Main.Size = UDim2.fromOffset(ButtonSize, ButtonSize)
+Main.Position = UDim2.new(0, 20, 0.5, -ButtonSize/2)
+Main.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Main.Image = "rbxassetid://72712654938049"
+Main.ScaleType = Enum.ScaleType.Crop
+Main.AutoButtonColor = false
+Main.Parent = ScreenGui
+
+local Circle = Instance.new("UICorner")
+Circle.CornerRadius = UDim.new(1, 0)
+Circle.Parent = Main
+
+local Glow = Instance.new("UIStroke")
+Glow.Color = Color3.new(1, 1, 1)
+Glow.Thickness = 2
+Glow.Parent = Main
+
+-- ANIMATED GLOW
+task.spawn(function()
+    while ScreenGui.Parent do
+        TweenService:Create(Glow, TweenInfo.new(0.7), {
+            Thickness = 4,
+            Transparency = 0.1
+        }):Play()
+        task.wait(0.7)
+
+        TweenService:Create(Glow, TweenInfo.new(0.7), {
+            Thickness = 2,
+            Transparency = 0
+        }):Play()
+        task.wait(0.7)
+    end
+end)
+
+-- MAIN PANEL
+local Frame = Instance.new("Frame")
+Frame.Size = UDim2.fromOffset(PanelWidth, PanelHeight)
+Frame.Position = UDim2.new(0, ButtonSize + 30, 0.5, -PanelHeight/2)
+Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Frame.Visible = false
+Frame.Parent = ScreenGui
+
+local PanelCorner = Instance.new("UICorner")
+PanelCorner.CornerRadius = UDim.new(0, 9)
+PanelCorner.Parent = Frame
+
+local PanelStroke = Instance.new("UIStroke")
+PanelStroke.Color = Color3.new(1, 1, 1)
+PanelStroke.Thickness = 1.5
+PanelStroke.Parent = Frame
+
+-- LEAVE BUTTON
+local Leave = Instance.new("TextButton")
+Leave.Size = UDim2.new(1, -10, 1, -10)
+Leave.Position = UDim2.fromOffset(5, 5)
+Leave.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Leave.Text = "LEAVE"
+Leave.TextColor3 = Color3.fromRGB(0, 0, 0)
+Leave.Font = Enum.Font.GothamBlack
+Leave.TextSize = IsMobile and 13 or 15
+Leave.Parent = Frame
+
+local LeaveCorner = Instance.new("UICorner")
+LeaveCorner.CornerRadius = UDim.new(0, 7)
+LeaveCorner.Parent = Leave
+
+-- DRAGGABLE MAIN CIRCLE
+local dragging = false
+local dragStart
+local startPos
+local moved = false
+local dragInput
+
+Main.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1
+    or input.UserInputType == Enum.UserInputType.Touch then
+
+        dragging = true
+        moved = false
+        dragStart = input.Position
+        startPos = Main.Position
+        dragInput = input
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if dragging and (
+        input.UserInputType == Enum.UserInputType.MouseMovement
+        or input.UserInputType == Enum.UserInputType.Touch
+    ) then
+
+        local delta = input.Position - dragStart
+
+        if delta.Magnitude > 5 then
+            moved = true
+        end
+
+        Main.Position = UDim2.new(
+            startPos.X.Scale,
+            startPos.X.Offset + delta.X,
+            startPos.Y.Scale,
+            startPos.Y.Offset + delta.Y
+        )
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    if input == dragInput then
+        dragging = false
+        dragInput = nil
+    end
+end)
+
+-- OPEN PANEL
+Main.Activated:Connect(function()
+    if not moved then
+        Frame.Visible = not Frame.Visible
+    end
+end)
+
+-- INSTANT KICK
+Leave.Activated:Connect(function()
+    Player:Kick(DiscordLink)
+end)
+
+print("JADENHUB LOADED")
